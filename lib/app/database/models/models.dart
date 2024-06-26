@@ -20,3 +20,5 @@ part 'rule_search.dart';
 part 'rule_toc.dart';
 
 part 'book_read_setting.dart';
+
+part 'book_content.dart';
