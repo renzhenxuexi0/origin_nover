@@ -10,4 +10,6 @@ crate-type = ["cdylib", "staticlib"]
 flutter_rust_bridge = { version = "=2.0.0-dev.40", features = ["chrono"] }
 reqwest = { version = "0.12", features = ["rustls-tls", "json"] }
 chrono = "0.4.38"
+serde_json = { version = "1.0", default-features = false, features = ["alloc"] }
+serde = { version = "1.0.203", features = ["derive"] }
 tokio = { version = "1", features = ["rt"] }
