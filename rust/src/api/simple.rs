@@ -28,27 +28,31 @@ pub fn init_app() {
 
 #[cfg(test)]
 mod tests {
-    use serde::{Deserialize, Serialize};
+    use std::fs;
+
     use serde_json::Value;
 
-    #[derive(Serialize, Deserialize, Debug)]
-    struct Url {
-        title: String,
-        url: String,
-        style: String,
-    }
-
     #[test]
-    fn test_parse_json() {
-        // 读取文件 assets/book_store.json
-        let json = std::fs::read_to_string("D:/flutter_project/origin_novel/rust/assets/new.json").unwrap().to_string();
-        let books: Value = serde_json::from_str(&json).unwrap();
-        let explore = books.get("exploreUrl").unwrap().to_string();
-        let result_string = explore.replace("\\\"", "\"").replace("\\n", "").replace("\\\\", "\\");
-        let result = &result_string[2..(result_string.len() - 2)];
+    fn test_parse_json() -> Result<(), serde_json::Error> {
+        // 读取JSON文件
+        let json = fs::read_to_string("D:\\workspace\\workspace_flutter\\origin_novel\\rust\\assets\\book_source.json").unwrap();
+        let books: Vec<Value> = serde_json::from_str(&json).unwrap();
 
+        // 遍历books数组中的每个条目
+        for book in books {
+            // 尝试获取每个条目中的exploreUrl字段
+            if let Some(explore_url_str) = book["exploreUrl"].as_str() {
+                // 将exploreUrl字段的字符串值解析为serde_json::Value
+                let explore_url_value: Value = serde_json::from_str(explore_url_str)?;
 
-        // println!("books = {:#?}", serde_json::from_str::<Value>(result).unwrap());
-        println!("books = {:#?}", result);
+                // 然后，将这个Value解析为Vec<Value>或其他目标类型
+                let result: Vec<Value> = serde_json::from_value(explore_url_value)?;
+
+                // 在这里处理或打印解析后的结果
+                println!("{:#?}", result);
+            }
+        }
+
+        Ok(())
     }
 }
