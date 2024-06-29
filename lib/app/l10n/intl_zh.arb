@@ -23,5 +23,8 @@
     }
   },
   "previousChapter": "上一章",
-  "nextChapter": "下一章"
+  "nextChapter": "下一章",
+  "thereAreNoMoreChaptersToCome": "后面没有章节了",
+  "thereAreNoChaptersAhead": "前面没有章节了",
+  "chapterDoesNotExist": "章节不存在"
 }

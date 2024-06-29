@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:origin_novel/pages/book_read/logic.dart';
 
+import '../../app/database/models/models.dart';
 import '../../app/l10n/generated/l10n.dart';
 import '../../app/theme/app_theme.dart';
 import '../../widget/gap.dart';
@@ -58,25 +59,38 @@ class BookReadPage extends StatelessWidget {
 
   /// 内容
   Widget _buildContent() {
-    return GetBuilder<BookReadLogic>(builder: (logic) {
-      return GestureDetector(
-        onTap: () {
-          logic.toggleAppBarVisibility();
-        },
-        onHorizontalDragStart: logic.onDragStart,
-        onHorizontalDragUpdate: logic.onDragUpdate,
-        onHorizontalDragEnd: logic.onDragEnd,
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          padding: const EdgeInsets.all(BookReadTheme.padding),
-          child: Text(
-            state.bookContentList[state.currentPage],
-            style: state.contentStyle,
+    return GetBuilder<BookReadLogic>(
+      builder: (logic) {
+        return GestureDetector(
+          onTap: logic.toggleAppBarVisibility,
+          child: PageView.builder(
+            controller: state.pageController,
+            itemCount: state.pageSize,
+            scrollDirection: switch (state.bookReadSetting.pageFlipType) {
+              PageFlipType.slideLeftOrRight => Axis.horizontal,
+              PageFlipType.slideUpAndDown => Axis.vertical,
+            },
+            onPageChanged: logic.pageOnPageProcessChange,
+            itemBuilder: (context, index) {
+              return KeyboardListener(
+                focusNode: state.keyboardListenerFocusNode,
+                autofocus: true,
+                onKeyEvent: logic.onKeyboardEvent,
+                child: Container(
+                  width: context.width - 2 * BookReadTheme.padding,
+                  height: context.height - 2 * BookReadTheme.padding,
+                  padding: const EdgeInsets.all(BookReadTheme.padding),
+                  child: Text(
+                    state.currentBookContentPage[index],
+                    style: state.contentStyle,
+                  ),
+                ),
+              );
+            },
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   /// 底部栏
@@ -128,15 +142,17 @@ class BookReadPage extends StatelessWidget {
           // 进度条
           SizedBox(
             width: context.width * 0.6,
-            child: Slider(
-              value: state.currentPage.toDouble(),
-              min: 0.0,
-              max: state.pageSize.toDouble() - 1,
-              divisions:
-                  state.pageSize == 1 ? state.pageSize : (state.pageSize - 1),
-              label: S.of(context).pageN(state.currentPage + 1),
-              onChanged: logic.onPageProcessChange,
-            ),
+            child: GetBuilder<BookReadLogic>(builder: (logic) {
+              return Slider(
+                value: state.currentPage.toDouble(),
+                min: 0.0,
+                max: state.pageSize.toDouble() - 1,
+                divisions:
+                    state.pageSize == 1 ? state.pageSize : (state.pageSize - 1),
+                label: S.of(context).pageN(state.currentPage + 1),
+                onChanged: logic.sliderOnPageProcessChange,
+              );
+            }),
           ),
           // 下一章
           TextButton(

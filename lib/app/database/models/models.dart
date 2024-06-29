@@ -14,3 +14,5 @@ part 'models.freezed.dart';
 part 'models.g.dart';
 
 part 'rule.dart';
+
+part 'book_content.dart';
