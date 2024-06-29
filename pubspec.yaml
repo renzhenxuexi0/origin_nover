@@ -32,7 +32,7 @@ dependencies:
   cookie_jar: ^4.0.8
   connectivity_plus: ^6.0.3
   flutter_smart_dialog: ^4.9.7+7
-  flutter_rust_bridge: 2.0.0-dev.40
+  flutter_rust_bridge: 2.0.0-dev.37
   cached_network_image: ^3.3.1
   rust_lib_origin_novel:
     path: rust_builder

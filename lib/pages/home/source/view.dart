@@ -129,7 +129,7 @@ class SourceItem extends StatelessWidget {
         child: ListTile(
           title: Text(bookSource.bookSourceName),
           subtitle: Text(bookSource.bookSourceUrl),
-          trailing: Text(bookSource.isEnabled == true
+          trailing: Text(bookSource.enabled == true
               ? S.of(context).enabled
               : S.of(context).disabled),
         ),
