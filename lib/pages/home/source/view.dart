@@ -21,12 +21,13 @@ class SourcePage extends StatelessWidget {
         actions: [
           // 菜单按钮
           PopupMenuButton(
-            offset: const Offset(0, 20),
+            offset: const Offset(-10, 35),
+            padding: const EdgeInsets.all(0),
             itemBuilder: (context) {
               return [
                 const PopupMenuItem(
                   value: 'refresh',
-                  height: 40,
+                  height: 30,
                   child: Center(child: Text('刷新书源')),
                 ),
               ];
