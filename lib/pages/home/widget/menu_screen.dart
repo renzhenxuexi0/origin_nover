@@ -14,6 +14,13 @@ class MenuScreen extends StatelessWidget {
             Get.toNamed(AppRoutes.bookSearch);
           },
         ),
+        MenuItem(
+          text: '书源管理',
+          icon: Icons.book,
+          onPressed: () {
+            Get.toNamed(AppRoutes.bookSource);
+          },
+        ),
       ],
     );
   }

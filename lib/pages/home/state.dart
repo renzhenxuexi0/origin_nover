@@ -1,8 +1,10 @@
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
+
 import '../../app/constants/assets.dart';
 import '../../app/database/models/models.dart';
 
 class HomeState {
-  late dynamic zoomDrawerController;
+  late ZoomDrawerController zoomDrawerController;
   late List<BookInfo> myBooks;
 
   HomeState() {

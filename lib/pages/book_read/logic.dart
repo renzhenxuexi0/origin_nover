@@ -20,6 +20,7 @@ import 'state.dart';
 class BookReadLogic extends GetxController {
   final BookReadState state = BookReadState();
   late TextPainter _textPainter;
+
   final _isar = AppDatabase.isarInstance;
 
   @override
@@ -30,21 +31,23 @@ class BookReadLogic extends GetxController {
             .where()
             .idEqualTo(DefaultSetting.defaultBookReadSettingId)
             .findFirst() ??
-        BookReadSetting(
-          id: DefaultSetting.defaultBookReadSettingId,
-          updateTime: DateTime.now(),
-          pageFlipType: PageFlipType.slideLeftOrRight,
-          fontSize: DefaultSetting.defaultBookReadSettingFontSize,
-          fontHeight: DefaultSetting.defaultBookReadSettingFontHeight,
-          wordSpacing: DefaultSetting.defaultBookReadSettingWordSpacing,
-          letterSpacing: DefaultSetting.defaultBookReadSettingLetterSpacing,
+        _isar.write(
+          (isar) {
+            final bookReadSetting = BookReadSetting(
+              id: DefaultSetting.defaultBookReadSettingId,
+              updateTime: DateTime.now(),
+              pageFlipType: PageFlipType.slideLeftOrRight,
+              fontSize: DefaultSetting.defaultBookReadSettingFontSize,
+              fontHeight: DefaultSetting.defaultBookReadSettingFontHeight,
+              wordSpacing: DefaultSetting.defaultBookReadSettingWordSpacing,
+              letterSpacing: DefaultSetting.defaultBookReadSettingLetterSpacing,
+            );
+            // 保存默认设置
+            isar.bookReadSettings.put(bookReadSetting);
+            return bookReadSetting;
+          },
         );
-    // 保存默认设置
-    _isar.write(
-      (isar) {
-        isar.bookReadSettings.put(state.bookReadSetting);
-      },
-    );
+    LogUtils.d('看书配置: ${state.bookReadSetting}');
     // 创建TextStyle
     state.contentStyle = TextStyle(
       fontSize: state.bookReadSetting.fontSize,
@@ -53,13 +56,25 @@ class BookReadLogic extends GetxController {
       letterSpacing: state.bookReadSetting.letterSpacing,
       fontFamily: state.bookReadSetting.fontFamily,
     );
+    // 创建TextPainter
+    _textPainter = TextPainter(
+      text: TextSpan(
+        text: "测",
+        style: state.contentStyle,
+      ),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout(
+        minWidth: 0,
+        maxWidth: (state.contentStyle.fontSize ??
+                DefaultSetting.defaultBookReadSettingFontSize) *
+            2);
     // 创建PageController
     state.pageController = PageController(
       initialPage: 0,
       keepPage: true,
       viewportFraction: 1,
     );
-
     // 初始化章节
     state.directory = HashMap();
     state.directory.addAll({
@@ -73,17 +88,6 @@ class BookReadLogic extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    _textPainter = TextPainter(
-      text: TextSpan(
-        text: "测",
-        style: state.contentStyle,
-      ),
-      maxLines: 1,
-      textDirection: TextDirection.ltr,
-    )..layout(
-        minWidth: 0,
-        maxWidth: state.contentStyle.fontSize ??
-            DefaultSetting.defaultBookReadSettingFontSize * 2);
     loadChapter(chapter: state.currentChapter);
   }
 
@@ -270,11 +274,12 @@ class BookReadLogic extends GetxController {
     final fontWidth = _textPainter.width;
     LogUtils.d('fontHeight: $fontHeight, fontWidth: $fontWidth');
     // 计算每行多少个字
-    final double lineWidth = screenWidth - BookReadTheme.padding * 2;
-    final double lineHeight = screenHeight - BookReadTheme.padding * 2;
+    final double contentWidth = screenWidth - BookReadTheme.padding * 2;
+    final double contentHeight = screenHeight - BookReadTheme.padding * 2;
     // 向上取整
-    final int lineCount = (lineHeight / fontHeight).floor();
-    final int charCount = (lineWidth / fontWidth).floor();
+    final int lineCount = (contentHeight / fontHeight).floor();
+    final int charCount = (contentWidth / fontWidth).floor();
+    // 保存
     state.lineCount = lineCount;
     state.charCount = charCount;
     state.screenWidth = screenWidth;

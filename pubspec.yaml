@@ -29,6 +29,7 @@ dependencies:
   flutter_rust_bridge: 2.0.0-dev.37
   cached_network_image: ^3.3.1
   flutter_zoom_drawer: ^3.2.0
+  window_manager: ^0.3.9
   rust_lib_origin_novel:
     path: rust_builder
 

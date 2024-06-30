@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:origin_novel/pages/book_source/binding.dart';
+import 'package:origin_novel/pages/book_source/view.dart';
 import 'package:origin_novel/pages/setting/view.dart';
 
 import '../../pages/book_detail/binding.dart';
@@ -24,6 +26,11 @@ abstract class AppPages {
       name: AppRoutes.setting,
       page: () => SettingPage(),
       binding: SettingBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.bookSource,
+      page: () => BookSourcePage(),
+      binding: BookSourceBinding(),
     ),
     GetPage(
       name: AppRoutes.bookSearch,

@@ -1,4 +1,5 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter/material.dart';
 
 import 'fonts.dart';
 
@@ -21,6 +22,9 @@ final appLightTheme = FlexThemeData.light(
     outlinedButtonRadius: 4.0,
     segmentedButtonRadius: 8.0,
     segmentedButtonBorderWidth: 0.5,
+  ),
+  textTheme: const TextTheme(
+    titleLarge: TextStyle(fontSize: 18.0),
   ),
   fontFamily: Fonts.alibabaPuHuiTi,
   visualDensity: FlexColorScheme.comfortablePlatformDensity,
@@ -46,6 +50,9 @@ final appDarkTheme = FlexThemeData.dark(
     outlinedButtonRadius: 4.0,
     segmentedButtonRadius: 8.0,
     segmentedButtonBorderWidth: 0.5,
+  ),
+  textTheme: const TextTheme(
+    titleLarge: TextStyle(fontSize: 18.0),
   ),
   fontFamily: Fonts.alibabaPuHuiTi,
   visualDensity: FlexColorScheme.comfortablePlatformDensity,
