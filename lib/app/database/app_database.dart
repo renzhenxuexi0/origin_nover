@@ -17,6 +17,8 @@ class AppDatabase {
         BookInfoSchema,
         BookSearchInfoSchema,
         BookSourceSchema,
+        BookReadSettingSchema,
+        BookChapterContentSchema
       ],
       directory: dir.path,
     );

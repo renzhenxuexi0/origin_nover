@@ -57,8 +57,6 @@ class BookReadState {
 
   /// 焦点
   FocusNode keyboardListenerFocusNode = FocusNode();
-
-  BookReadState();
 }
 
 enum ChapterType {

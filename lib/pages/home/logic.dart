@@ -1,3 +1,4 @@
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:get/get.dart';
 
 import 'state.dart';
@@ -5,9 +6,9 @@ import 'state.dart';
 class HomeLogic extends GetxController {
   final HomeState state = HomeState();
 
-  /// 页面切换
-  void changePageIndex(int index) {
-    state.pageIndex = index;
-    update();
+  @override
+  void onInit() {
+    super.onInit();
+    state.zoomDrawerController = ZoomDrawerController();
   }
 }

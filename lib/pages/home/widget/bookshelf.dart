@@ -1,42 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+part of '../view.dart';
 
-import '../../../app/constants/assets.dart';
-import '../../../app/database/models/models.dart';
-import '../../../app/routes/app_routes.dart';
-import '../../../widget/gap.dart';
-import 'logic.dart';
+class Bookshelf extends StatelessWidget {
+  const Bookshelf({super.key, required this.logic, required this.state});
 
-class BookPage extends StatelessWidget {
-  BookPage({super.key});
-
-  final logic = Get.find<BookLogic>();
-  final state = Get.find<BookLogic>().state;
+  final HomeLogic logic;
+  final HomeState state;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('书架'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Get.toNamed(AppRoutes.bookSearch);
-              },
-              tooltip: '搜索',
-              icon: const Icon(Icons.search))
-        ],
-      ),
-      body: GetBuilder<BookLogic>(builder: (logic) {
-        return ListView.builder(
-          itemCount: state.myBooks.length,
-          itemBuilder: (context, index) {
-            return BookItem(
-              book: state.myBooks[index],
-            );
-          },
+    return ListView.builder(
+      itemCount: state.myBooks.length,
+      itemBuilder: (context, index) {
+        return BookItem(
+          book: state.myBooks[index],
         );
-      }),
+      },
     );
   }
 }

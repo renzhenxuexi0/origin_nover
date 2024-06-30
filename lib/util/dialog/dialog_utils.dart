@@ -65,6 +65,7 @@ class DialogUtils {
       await SmartDialog.showToast(
         '',
         maskColor: _maskBackground,
+        displayTime: const Duration(seconds: 1),
         builder: (BuildContext context) => BaseToast(
           type: ToastType.danger,
           alignment: alignment ?? _defaultAlignment,

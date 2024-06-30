@@ -1,103 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:get/get.dart';
-import 'package:origin_novel/pages/home/book/view.dart';
-import 'package:origin_novel/pages/home/download/view.dart';
-import 'package:origin_novel/pages/home/logic.dart';
-import 'package:origin_novel/pages/home/setting/view.dart';
-import 'package:origin_novel/pages/home/source/view.dart';
-import 'package:origin_novel/pages/home/state.dart';
-import 'package:origin_novel/util/platform_utils.dart';
+
+import '../../app/constants/assets.dart';
+import '../../app/database/models/models.dart';
+import '../../app/l10n/generated/l10n.dart';
+import '../../app/routes/app_routes.dart';
+import '../../widget/gap.dart';
+import 'logic.dart';
+import 'state.dart';
+
+part 'widget/bookshelf.dart';
+part 'widget/menu_screen.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
   final logic = Get.find<HomeLogic>();
   final state = Get.find<HomeLogic>().state;
-  final pages = [
-    BookPage(),
-    DownloadPage(),
-    SourcePage(),
-    SettingPage(),
-  ];
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<HomeLogic>(builder: (logic) {
-      return Scaffold(
-        body: Row(
-          children: [
-            if (PlatformUtils.isDesktop())
-              HomeNavigationRail(state: state, logic: logic),
-            Expanded(
-              child: SafeArea(
-                child: IndexedStack(
-                  index: state.pageIndex,
-                  children: pages,
-                ),
-              ),
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(S.of(context).appName),
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          // 开启或关闭抽屉菜单
+          onPressed: () => state.zoomDrawerController.toggle!(),
         ),
-        bottomNavigationBar: PlatformUtils.isDesktop()
-            ? null
-            : BottomNavigationBar(
-                currentIndex: state.pageIndex,
-                onTap: logic.changePageIndex,
-                items: const [
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.book),
-                    label: '书架',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.download),
-                    label: '下载',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.source),
-                    label: '书源',
-                  ),
-                  BottomNavigationBarItem(
-                    icon: Icon(Icons.settings),
-                    label: '设置',
-                  ),
-                ],
-              ),
-      );
-    });
-  }
-}
-
-class HomeNavigationRail extends StatelessWidget {
-  const HomeNavigationRail(
-      {super.key, required this.state, required this.logic});
-
-  final HomeState state;
-  final HomeLogic logic;
-
-  @override
-  Widget build(BuildContext context) {
-    return NavigationRail(
-      labelType: NavigationRailLabelType.all,
-      selectedIndex: state.pageIndex,
-      onDestinationSelected: logic.changePageIndex,
-      destinations: const [
-        NavigationRailDestination(
-          icon: Icon(Icons.book),
-          label: Text('书架'),
-        ),
-        NavigationRailDestination(
-          icon: Icon(Icons.download),
-          label: Text('下载'),
-        ),
-        NavigationRailDestination(
-          icon: Icon(Icons.source),
-          label: Text('书源'),
-        ),
-        NavigationRailDestination(
-          icon: Icon(Icons.settings),
-          label: Text('设置'),
-        ),
-      ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () => Get.toNamed(AppRoutes.bookSearch),
+          ),
+        ],
+      ),
+      body: GetBuilder<HomeLogic>(builder: (logic) {
+        return ZoomDrawer(
+          controller: state.zoomDrawerController,
+          menuScreen: const MenuScreen(),
+          mainScreen: Bookshelf(logic: logic, state: state),
+          borderRadius: 24.0,
+          angle: 0.0,
+          mainScreenTapClose: true,
+        );
+      }),
     );
   }
 }

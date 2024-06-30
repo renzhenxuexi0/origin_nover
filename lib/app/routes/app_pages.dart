@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:origin_novel/pages/setting/view.dart';
 
 import '../../pages/book_detail/binding.dart';
 import '../../pages/book_detail/view.dart';
@@ -9,6 +10,7 @@ import '../../pages/book_search/binding.dart';
 import '../../pages/book_search/view.dart';
 import '../../pages/home/binding.dart';
 import '../../pages/home/view.dart';
+import '../../pages/setting/binding.dart';
 import 'app_routes.dart';
 
 abstract class AppPages {
@@ -17,6 +19,11 @@ abstract class AppPages {
       name: AppRoutes.home,
       page: () => HomePage(),
       binding: HomeBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.setting,
+      page: () => SettingPage(),
+      binding: SettingBinding(),
     ),
     GetPage(
       name: AppRoutes.bookSearch,

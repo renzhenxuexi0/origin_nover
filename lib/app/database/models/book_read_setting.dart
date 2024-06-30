@@ -1,18 +1,25 @@
 part of 'models.dart';
 
 /// 阅读设置
-@Freezed()
+/// [updateTime] 更新时间
+/// [pageFlipType] 翻页类型
+/// [fontSize] 字体大小
+/// [fontHeight] 行高
+/// [wordSpacing] 字间距
+/// [letterSpacing] 行间距
+/// [fontFamily] 字体
+@freezed
 @collection
 class BookReadSetting with _$BookReadSetting {
   const factory BookReadSetting({
     required int id,
     required DateTime updateTime,
+    required PageFlipType pageFlipType,
     double? fontSize,
     double? fontHeight,
     double? wordSpacing,
     double? letterSpacing,
     String? fontFamily,
-    required PageFlipType pageFlipType,
   }) = _BookReadSetting;
 
   const BookReadSetting._();

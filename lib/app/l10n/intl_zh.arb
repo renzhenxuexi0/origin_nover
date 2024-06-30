@@ -1,5 +1,6 @@
 {
   "@@locale": "zh",
+  "appName": "起源小说",
   "enabled": "启用",
   "disabled": "禁用",
   "cancel": "取消",

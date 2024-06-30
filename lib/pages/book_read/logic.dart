@@ -104,37 +104,6 @@ class BookReadLogic extends GetxController {
     update();
   }
 
-  void onDragStart(DragStartDetails details) {
-    switch (state.bookReadSetting.pageFlipType) {
-      case PageFlipType.slideLeftOrRight:
-        state.startDrag = details.globalPosition.dx;
-        break;
-      case PageFlipType.slideUpAndDown:
-        state.startDrag = details.globalPosition.dy;
-    }
-    state.totalDrag = 0.0;
-  }
-
-  void onDragUpdate(DragUpdateDetails details) {
-    switch (state.bookReadSetting.pageFlipType) {
-      case PageFlipType.slideLeftOrRight:
-        state.totalDrag += details.delta.dx;
-        break;
-      case PageFlipType.slideUpAndDown:
-        state.totalDrag += details.delta.dy;
-    }
-  }
-
-  void onDragEnd(DragEndDetails details) {
-    if (state.totalDrag < 0 && state.currentPage >= state.pageSize - 1) {
-      nextChapter();
-    } else if (state.totalDrag > 0 && state.currentPage <= 0) {
-      previousChapter();
-    }
-    // 重置滑动偏移量
-    state.totalDrag = 0.0;
-  }
-
   /// 切换 AppBar 显示隐藏
   void toggleAppBarVisibility() {
     state.isAppBarVisible = !state.isAppBarVisible;
@@ -144,15 +113,22 @@ class BookReadLogic extends GetxController {
   /// 加载章节
   Future<void> loadChapter({required int chapter}) async {
     if (state.directory.containsKey(chapter)) {
-      DialogUtils.loading();
-      state.bookContent =
-          await rootBundle.loadString(state.directory[chapter]!);
-      // 计算分页
-      state.currentBookContentPage = [];
-      _splitBookContent();
-      update();
-      await DialogUtils.dismiss();
-      LogUtils.d('加载第 $chapter 章节完成');
+      try {
+        DialogUtils.loading();
+        // 重置
+        state.currentPage = 0;
+        state.currentBookContentPage = [];
+        state.pageController.jumpToPage(0);
+        // 加载章节内容
+        state.bookContent =
+            await rootBundle.loadString(state.directory[chapter]!);
+        // 计算分页
+        _splitBookContent();
+        update();
+        LogUtils.d('加载第 $chapter 章节完成');
+      } finally {
+        await DialogUtils.dismiss();
+      }
     } else {
       DialogUtils.danger(S.current.chapterDoesNotExist);
     }
@@ -160,65 +136,71 @@ class BookReadLogic extends GetxController {
 
   /// 上一章
   Future<void> previousChapter() async {
-    final chapter = state.currentChapter - 1;
-    if (chapter <= 0) {
-      DialogUtils.danger(S.current.thereAreNoChaptersAhead);
-      return;
-    }
+    try {
+      DialogUtils.loading();
 
-    loadChapter(chapter: chapter);
+      if (state.currentChapter < 2) {
+        DialogUtils.danger(S.current.thereAreNoChaptersAhead);
+        return;
+      }
+      state.currentChapter -= 1;
+      loadChapter(chapter: state.currentChapter);
+    } finally {
+      await DialogUtils.dismiss();
+    }
   }
 
   /// 下一章
   Future<void> nextChapter() async {
-    final chapter = state.currentChapter + 1;
-    if (chapter > state.totalChapter) {
-      DialogUtils.danger(S.current.thereAreNoMoreChaptersToCome);
-      return;
-    }
+    try {
+      DialogUtils.loading();
 
-    loadChapter(chapter: chapter);
+      if (state.currentChapter > state.totalChapter + 1) {
+        DialogUtils.danger(S.current.thereAreNoMoreChaptersToCome);
+        return;
+      }
+      state.currentChapter += 1;
+      loadChapter(chapter: state.currentChapter);
+    } finally {
+      await DialogUtils.dismiss();
+    }
   }
 
   /// 上一页
-  void previousPage() {
+  Future<void> previousPage() async {
     if (state.currentPage > 0) {
-      state.currentPage--;
-      state.pageController.previousPage(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
-      update();
+      try {
+        DialogUtils.loading();
+        state.currentPage--;
+        state.pageController.previousPage(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+        update();
+      } finally {
+        await DialogUtils.dismiss();
+      }
     } else {
       previousChapter();
     }
   }
 
   /// 下一页
-  void nextPage() {
+  Future<void> nextPage() async {
     if (state.currentPage < state.pageSize - 1) {
-      state.currentPage++;
-      state.pageController.nextPage(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeInOut,
-      );
-      update();
+      try {
+        DialogUtils.loading();
+        state.currentPage++;
+        state.pageController.nextPage(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+        );
+        update();
+      } finally {
+        await DialogUtils.dismiss();
+      }
     } else {
       nextChapter();
-    }
-  }
-
-  /// 键盘事件
-  void onKeyboardEvent(KeyEvent event) {
-    if (event is KeyDownEvent) {
-      switch (event.logicalKey) {
-        case LogicalKeyboardKey.arrowLeft:
-          previousPage();
-          break;
-        case LogicalKeyboardKey.arrowRight:
-          nextPage();
-          break;
-      }
     }
   }
 

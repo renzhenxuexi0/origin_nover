@@ -1,14 +1,15 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:origin_novel/pages/book_read/logic.dart';
 
 import '../../app/database/models/models.dart';
 import '../../app/l10n/generated/l10n.dart';
 import '../../app/theme/app_theme.dart';
 import '../../widget/gap.dart';
+import 'logic.dart';
 import 'widget/book_read_page_bottom_button.dart';
 
-const double _bottomBarHeight = 140.0;
+const double _bottomBarHeight = 150.0;
 const double _opacity = 0.8;
 
 class BookReadPage extends StatelessWidget {
@@ -72,10 +73,16 @@ class BookReadPage extends StatelessWidget {
             },
             onPageChanged: logic.pageOnPageProcessChange,
             itemBuilder: (context, index) {
-              return KeyboardListener(
-                focusNode: state.keyboardListenerFocusNode,
-                autofocus: true,
-                onKeyEvent: logic.onKeyboardEvent,
+              return Listener(
+                onPointerSignal: (event) {
+                  if (event is PointerScrollEvent) {
+                    if (event.scrollDelta.dy < 0) {
+                      logic.previousPage();
+                    } else {
+                      logic.nextPage();
+                    }
+                  }
+                },
                 child: Container(
                   width: context.width - 2 * BookReadTheme.padding,
                   height: context.height - 2 * BookReadTheme.padding,

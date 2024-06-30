@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 
 import 'app/database/app_database.dart';
 import 'app/l10n/generated/l10n.dart';
-import 'app/net/http_client.dart';
 import 'app/routes/app_pages.dart';
 import 'app/routes/app_routes.dart';
 import 'app/theme/app_theme.dart';
@@ -16,9 +15,6 @@ Future<void> main() async {
   // 它会初始化Flutter的Widgets库。这个方法通常在你的应用程序的main()函数中调用，
   // 特别是在你的应用程序需要在runApp()之前执行异步操作时。
   WidgetsFlutterBinding.ensureInitialized();
-
-  // 初始化dio
-  await Http.init();
   // 初始化isar
   await AppDatabase.init();
   // 初始化rust
@@ -50,6 +46,7 @@ class MyApp extends StatelessWidget {
       getPages: AppPages.pages,
       theme: appLightTheme,
       darkTheme: appDarkTheme,
+      defaultTransition: Transition.rightToLeftWithFade,
       supportedLocales: S.delegate.supportedLocales,
       localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         S.delegate,

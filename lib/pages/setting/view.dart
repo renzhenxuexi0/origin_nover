@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:origin_novel/pages/home/setting/logic.dart';
-import 'package:origin_novel/widget/gap.dart';
+
+import '../../widget/gap.dart';
+import 'logic.dart';
 
 class SettingPage extends StatelessWidget {
   SettingPage({super.key});
